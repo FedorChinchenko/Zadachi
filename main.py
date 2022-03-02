@@ -11,7 +11,6 @@ from PIL import Image
 from get_spn import get_spn
 
 toponym_to_find = " ".join(sys.argv[1:])
-toponym_to_find = 'Москва, ул. Ак. Королева, 12'
 
 
 geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
@@ -37,12 +36,13 @@ toponym_coodrinates = toponym["Point"]["pos"]
 # Долгота и широта:
 toponym_longitude, toponym_lattitude = toponym_coodrinates.split(" ")
 # Собираем параметры для запроса к StaticMapsAPI:
+point = ",".join([toponym_longitude, toponym_lattitude])
 map_params = {
-    "ll": ",".join([toponym_longitude, toponym_lattitude]),
+    "ll": point,
     "spn": get_spn(toponym),
-    "l": "map"
+    "l": "map",
+    "pt": f'{point},pm2rdm'
 }
-
 map_api_server = "http://static-maps.yandex.ru/1.x/"
 # ... и выполняем запрос
 response = requests.get(map_api_server, params=map_params)
