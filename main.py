@@ -8,7 +8,11 @@ from PIL import Image
 # Пусть наше приложение предполагает запуск:
 # python search.py Москва, ул. Ак. Королева, 12
 # Тогда запрос к геокодеру формируется следующим образом:
+from get_spn import get_spn
+
 toponym_to_find = " ".join(sys.argv[1:])
+toponym_to_find = 'Москва, ул. Ак. Королева, 12'
+
 
 geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
 
@@ -32,13 +36,10 @@ toponym = json_response["response"]["GeoObjectCollection"][
 toponym_coodrinates = toponym["Point"]["pos"]
 # Долгота и широта:
 toponym_longitude, toponym_lattitude = toponym_coodrinates.split(" ")
-
-delta = "0.005"
-
 # Собираем параметры для запроса к StaticMapsAPI:
 map_params = {
     "ll": ",".join([toponym_longitude, toponym_lattitude]),
-    "spn": ",".join([delta, delta]),
+    "spn": get_spn(toponym),
     "l": "map"
 }
 
